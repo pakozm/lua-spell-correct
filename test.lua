@@ -19,7 +19,7 @@ function spelltest(tests, bias, verbose)
   for target,wrongs in pairs(tests) do
     for wrong in wrongs:gmatch("[^%s]+") do
       n = n + 1
-      local w = spell.correct(wrong)
+      local w = assert( spell.correct(wrong) )
       if w ~= target then
         bad = bad + 1
         unknown = unknown + ((spell.model[target] and 0) or 1)
@@ -36,6 +36,12 @@ function spelltest(tests, bias, verbose)
 end
 
 ------------------------------------------------------------------------------
+
+local tests = {
+  ['access'] = 'acess', ['accessing'] = 'accesing', ['accommodation'] =
+    'accomodation acommodation acomodation', ['account'] = 'acount',
+  ['benefit'] = 'benifit', ['benefits'] = 'benifits', ['between'] = 'beetween',
+}
 
 local tests1 = {
   ['access'] = 'acess', ['accessing'] = 'accesing', ['accommodation'] =
@@ -231,5 +237,9 @@ local tests2 = {
   ['together'] = 'togehter', ['profits'] = 'proffits'
 }
 
+--profiler.start()
+--print_result(spelltest(tests))
 print_result(spelltest(tests1))
 print_result(spelltest(tests2))
+--profiler.stop()
+--profiler.save(io.open("profile.out", "w"))

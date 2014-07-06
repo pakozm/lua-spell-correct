@@ -8,6 +8,6 @@ while true do
   io.stdout:flush()
   local w = io.read()
   if not w then break end
-  print("Sugestion:",spell.correct(w))
+  print("Sugestion:", assert( spell.correct(w) ))
 end
 print()
