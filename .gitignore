@@ -1,0 +1,26 @@
+*.txt
+gmon.out
+
+# Building files #
+##################
+*.o
+*.so
+
+# Emacs backups #
+#################
+*~
+\#*\#
+.\#*
+
+# Vim swap #
+*.swp
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
