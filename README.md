@@ -4,6 +4,17 @@ Lua spell-correct
 Lua implementation of [spelling corrector](http://norvig.com/spell-correct.html)
 example implemented by Peter Norvig.
 
+It has been implemented as a Lua module, so it can be loaded by using `require`.
+The following files are available:
+
+- `spell.lua` is the Lua module with the spelling corrector functions.
+
+- `corrector.lua` is a Lua script which loads the data and allows to perform
+  on-line corrections.
+
+- `test.lua` has both tests sugested by Peter Norvig to measure the performance
+  of the implementation.
+
 Example of use
 ==============
 
