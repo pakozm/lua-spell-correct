@@ -6,7 +6,7 @@
 -- Open source code under MIT license: http://www.opensource.org/licenses/mit-license.php
 
 local pairs,ipairs = pairs,ipairs
-local coroutine_yield,coroutine_wrap = coroutine.yield,coroutine.wrap
+local yield,wrap = coroutine.yield,coroutine.wrap
 local alphabet_str,alphabet,model = 'abcdefghijklmnopqrstuvwxyz',{},{}
 for a in alphabet_str:gmatch(".") do alphabet[#alphabet+1] = a end
 
@@ -43,13 +43,13 @@ local function init(filename) train_model(words(filename)) end
 
 local make_yield = function()
   local set = {}
-  return function(w) if not set[w] then set[w] = true coroutine_yield(w) end end
+  return function(w) if not set[w] then set[w] = true yield(w) end end
 end
 
 local function edits1(word_str)
   local yield = make_yield()
-  return coroutine_wrap(function()
-      local set, splits, word = {}, {}, {}
+  return wrap(function()
+      local splits, word = {}, {}
       for i=1,#word_str do
         word[i],splits[i] = word_str:sub(i,i),{word_str:sub(1,i),word_str:sub(i)}
       end
@@ -74,7 +74,7 @@ end
 
 local function known_edits2(w, set)
   local yield = make_yield()
-  return coroutine_wrap(function()
+  return wrap(function()
       for e1 in edits1(w) do for e2 in edits1(e1) do
           if model[e2] then yield( e2 ) end
       end end
@@ -82,8 +82,8 @@ local function known_edits2(w, set)
 end
 
 local function known(list,aux)
-  return coroutine_wrap(function()
-      for w in list,aux do if model[w] then coroutine_yield(w) end end
+  return wrap(function()
+      for w in list,aux do if model[w] then yield(w) end end
   end)
 end
 
