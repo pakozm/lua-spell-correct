@@ -1,3 +1,4 @@
+package.path = string.format("?.lua;%s",package.path)
 local spell = require "spell"
 
 spell.init("big.txt")
