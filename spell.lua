@@ -43,13 +43,13 @@ local function edits1(word_str, yield)
       end
       -- sentinels
       splits[0], splits[#word_str+1] = { "", word_str }, { word_str, ""}
-        -- delete
+        -- deletes
       for i=1,#word_str do yield( splits[i-1][1]..splits[i+1][2] ) end
       -- transposes
       for i=1,#word_str-1 do
         yield( splits[i-1][1]..word[i+1]..word[i]..splits[i+2][2] )
       end
-      -- replace
+      -- replaces
       for i=1,#word_str do for j=1,#alphabet do
           yield( splits[i-1][1]..alphabet[j]..splits[i+1][2] )
       end end
