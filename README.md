@@ -2,7 +2,7 @@ Lua spell-correct
 =================
 
 Lua implementation of [spelling corrector](http://norvig.com/spell-correct.html)
-example implemented by Peter Norvig.
+example developed in Python by Peter Norvig.
 
 It has been implemented as a Lua module, so it can be loaded by using `require`.
 The following files are available:

@@ -31,7 +31,7 @@ function spelltest(tests, bias, verbose)
       end
     end
   end
-  return { bad=bad, n=n, bias=bias, pct=100. - 100.*bad/n,
+  return { bad=bad, n=n, bias=bias, pct=100 - 100*bad/n,
            unknown=unknown, secs=os.clock()-start }
 end
 

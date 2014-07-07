@@ -13,41 +13,29 @@ for a in alphabet_str:gmatch(".") do alphabet[#alphabet+1] = a end
 local function list(w) return pairs{[w]=true} end
 
 local function max(...)
-  local model = model
+  local arg,max,hyp = table.pack(...),0,nil
   local f = function(w) return model[w] or 1 end
-  local max,hyp=0,nil
-  for _,it in ipairs{...} do
-    for w in it[1],it[2] do
-      local p = f(w) if p>max or ( p==max and hyp<w ) then hyp,max=w,f(w) end
-    end
-    if hyp then return hyp end
+  for w in table.unpack(arg) do
+    local p = f(w) if p>max or ( p==max and hyp<w ) then hyp,max=w,f(w) end
   end
-  return false,"Unable to find sugestions"
+  return hyp
 end
 
-local function words(filename)
-  local f = io.open(filename)
-  return function()
-    local line = f:read("*l")
-    if not line then return nil end
-    return line:lower():gmatch("[a-z]+")
-  end
+local function words(text) return text:lower():gmatch("[a-z]+") end
+
+local function train(features)
+  for f in features do model[f] = (model[f] or 1) + 1 end
 end
 
-local function train_model(words)
-  local model = model
-  for w_it in words do for w in w_it do model[w] = (model[w] or 1) + 1 end end
-end
-
-local function init(filename) train_model(words(filename)) end
+local function init(filename) train(words(io.open(filename):read("*a"))) end
 
 local make_yield = function()
   local set = {}
   return function(w) if not set[w] then set[w] = true yield(w) end end
 end
 
-local function edits1(word_str)
-  local yield = make_yield()
+local function edits1(word_str, yield)
+  local yield = yield or make_yield()
   return wrap(function()
       local splits, word = {}, {}
       for i=1,#word_str do
@@ -55,27 +43,27 @@ local function edits1(word_str)
       end
       -- sentinels
       splits[0], splits[#word_str+1] = { "", word_str }, { word_str, ""}
-      -- deletes
+        -- delete
       for i=1,#word_str do yield( splits[i-1][1]..splits[i+1][2] ) end
       -- transposes
       for i=1,#word_str-1 do
         yield( splits[i-1][1]..word[i+1]..word[i]..splits[i+2][2] )
       end
-      -- replaces
+      -- replace
       for i=1,#word_str do for j=1,#alphabet do
           yield( splits[i-1][1]..alphabet[j]..splits[i+1][2] )
       end end
       -- inserts
-      for i=0,#word_str do for j=1,#alphabet do
+      for i=1,#word_str do for j=1,#alphabet do
           yield( splits[i][1]..alphabet[j]..splits[i+1][2] )
       end end
   end)
 end
 
 local function known_edits2(w, set)
-  local yield = make_yield()
+  local yield,yield2 = make_yield(),make_yield()
   return wrap(function()
-      for e1 in edits1(w) do for e2 in edits1(e1) do
+      for e1 in edits1(w) do for e2 in edits1(e1,yield2) do
           if model[e2] then yield( e2 ) end
       end end
   end)
@@ -89,7 +77,8 @@ end
 
 local function correct(w)
   local w = w:lower()
-  return max({known(list(w))}, {known(edits1(w))}, {known_edits2(w)}, {list(w)})
+  local result = max(known(list(w))) or max(known(edits1(w))) or max(known_edits2(w)) or max(list(w))
+  if result then return result else return false,"Unable to find sugestions" end
 end
 
 return { init=init, correct=correct, model=model }
