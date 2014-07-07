@@ -24,9 +24,9 @@ function spelltest(tests, bias, verbose)
         bad = bad + 1
         unknown = unknown + ((spell.model[target] and 0) or 1)
         if verbose then
-          print(string.format("correct(%r) => %r (%d); expected %r (%d)",
-                              wrong, w, spell.model[w], target,
-                              spell.model[target]))
+          print(string.format("correct(%s) => %s (%d); expected %s (%d)",
+                              wrong, w, spell.model[w] or 1, target,
+                              spell.model[target] or 1))
         end
       end
     end
