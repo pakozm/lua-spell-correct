@@ -14,9 +14,8 @@ local function list(w) return pairs{[w]=true} end
 
 local function max(...)
   local arg,max,hyp = table.pack(...),0,nil
-  local f = function(w) return model[w] or 1 end
   for w in table.unpack(arg) do
-    local p = f(w) if p>max or ( p==max and hyp<w ) then hyp,max=w,f(w) end
+    local p = model[w] or 1 if p>max or ( p==max and hyp<w ) then hyp,max=w,p end
   end
   return hyp
 end
